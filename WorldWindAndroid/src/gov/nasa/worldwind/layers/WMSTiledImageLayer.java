@@ -118,7 +118,7 @@ public class WMSTiledImageLayer extends TiledImageLayer {
 	}
 
 	public static class URLBuilder implements TileUrlBuilder {
-		private static final String MAX_VERSION = "1.3.0";
+		private static final String MAX_VERSION = "1.1.1";
 
 		private final String layerNames;
 		private final String styleNames;
@@ -137,7 +137,8 @@ public class WMSTiledImageLayer extends TiledImageLayer {
 
 			if (version == null || version.compareTo(MAX_VERSION) >= 0) {
 				this.wmsVersion = MAX_VERSION;
-				this.crs = "&crs=CRS:84";
+				//this.crs = "&crs=CRS:84";
+				this.crs = "&srs=EPSG:4326";
 			} else {
 				this.wmsVersion = version;
 				this.crs = "&srs=EPSG:4326";

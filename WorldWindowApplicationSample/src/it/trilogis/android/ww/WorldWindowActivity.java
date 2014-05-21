@@ -52,12 +52,12 @@ public class WorldWindowActivity extends Activity {
     // This parameters are useful for WMS Addition and view.
     // Thanks to the Autonomous Province of Bolzano (Italy) for the Open WMS Server.
     // The Use of their WMS Services for commercial and/or support to companies is allowed.
-    public final static String DEFAULT_WMS_URL = "http://sdi.provinz.bz.it/geoserver/wms";
-    private final static double BOLZANO_LATITUDE = 46.4995d;
-    private final static double BOLZANO_LONGITUDE = 11.3254d;
-    private final static double BOLZANO_VIEW_HEADING = 60d;
-    private final static double BOLZANO_VIEW_TILT = 60d;
-    private final static double BOLZANO_VIEW_DISTANCE_KM = 13000d;
+    public final static String DEFAULT_WMS_URL = "http://ows.terrestris.de/osm/service";
+    private final static double COMO_LATITUDE = 45.815594d;
+    private final static double COMO_LONGITUDE = 9.1098543d;
+    private final static double COMO_VIEW_HEADING = 0d;
+    private final static double COMO_VIEW_TILT = 0d;
+    private final static double COMO_VIEW_DISTANCE_KM = 13000d;
 
     protected WorldWindowGLSurfaceView wwd;
 
@@ -244,11 +244,11 @@ public class WorldWindowActivity extends Activity {
         BasicView view = (BasicView) this.wwd.getView();
         Globe globe = this.wwd.getModel().getGlobe();
         // set the initial position to "Bolzano", where you can see the WMS Layers
-        view.setLookAtPosition(Position.fromDegrees(BOLZANO_LATITUDE, BOLZANO_LONGITUDE,
-            globe.getElevation(Angle.fromDegrees(BOLZANO_LATITUDE), Angle.fromDegrees(BOLZANO_LONGITUDE))));
-        view.setHeading(Angle.fromDegrees(BOLZANO_VIEW_HEADING));
-        view.setTilt(Angle.fromDegrees(BOLZANO_VIEW_TILT));
-        view.setRange(BOLZANO_VIEW_DISTANCE_KM);
+        view.setLookAtPosition(Position.fromDegrees(COMO_LATITUDE, COMO_LONGITUDE,
+            globe.getElevation(Angle.fromDegrees(COMO_LATITUDE), Angle.fromDegrees(COMO_LONGITUDE))));
+        view.setHeading(Angle.fromDegrees(COMO_VIEW_HEADING));
+        view.setTilt(Angle.fromDegrees(COMO_VIEW_TILT));
+        view.setRange(COMO_VIEW_DISTANCE_KM);
     }
 
     protected void setupTextViews() {
