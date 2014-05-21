@@ -29,20 +29,26 @@ import it.trilogis.android.ww.R;
 import it.trilogis.android.ww.dialogs.AddWMSDialog;
 import it.trilogis.android.ww.dialogs.TocDialog;
 import it.trilogis.android.ww.dialogs.AddWMSDialog.OnAddWMSLayersListener;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.zip.Inflater;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.ToggleButton;
+import it.polimi.snowwatch.LocationManager;
 
 /**
  * @author Nicola Dorigatti
  */
-public class WorldWindowActivity extends Activity {
+public class WorldWindowActivity extends Activity implements LocationManager.OnLocationEventListener {
     static {
         System.setProperty("gov.nasa.worldwind.app.config.document", "config/wwandroiddemo.xml");
     }
@@ -60,6 +66,9 @@ public class WorldWindowActivity extends Activity {
     private final static double COMO_VIEW_DISTANCE_KM = 13000d;
 
     protected WorldWindowGLSurfaceView wwd;
+    
+    private LocationManager mLocationManager = null;
+    private Menu mMenu = null;
 
     // private CompassLayer cl;
     // private WorldMapLayer wml;
@@ -104,6 +113,9 @@ public class WorldWindowActivity extends Activity {
         this.wwd.setModel((Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
         this.setupView();
         this.setupTextViews();
+        
+        mLocationManager = new LocationManager(this);
+        mLocationManager.setLocationUpdateEventListener(this);
     }
 
     @Override
@@ -111,6 +123,7 @@ public class WorldWindowActivity extends Activity {
         super.onPause();
         // Pause the OpenGL ES rendering thread.
         this.wwd.onPause();
+        this.mLocationManager.pause();
     }
 
     @Override
@@ -119,12 +132,14 @@ public class WorldWindowActivity extends Activity {
 
         // Resume the OpenGL ES rendering thread.
         this.wwd.onResume();
+        this.mLocationManager.resume();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Configure the application's options menu using the XML file res/menu/options.xml.
         this.getMenuInflater().inflate(R.menu.options, menu);
+        mMenu = menu;
         return true;
     }
 
@@ -212,8 +227,8 @@ public class WorldWindowActivity extends Activity {
             // }
             // }
             // break;
-            case R.id.menu_add_wms:
-                openAddWMSDialog();
+            case R.id.menu_my_location:
+            	moveToMyLocation();
                 break;
             case R.id.show_layers_toc:
                 // Toast.makeText(getApplicationContext(), "Showing TOC!", Toast.LENGTH_LONG).show();
@@ -243,7 +258,7 @@ public class WorldWindowActivity extends Activity {
     protected void setupView() {
         BasicView view = (BasicView) this.wwd.getView();
         Globe globe = this.wwd.getModel().getGlobe();
-        // set the initial position to "Bolzano", where you can see the WMS Layers
+        // set the initial position to "Como", where you can see the WMS Layers
         view.setLookAtPosition(Position.fromDegrees(COMO_LATITUDE, COMO_LONGITUDE,
             globe.getElevation(Angle.fromDegrees(COMO_LATITUDE), Angle.fromDegrees(COMO_LONGITUDE))));
         view.setHeading(Angle.fromDegrees(COMO_VIEW_HEADING));
@@ -286,4 +301,24 @@ public class WorldWindowActivity extends Activity {
         tocDialog.setWorldWindData(this.wwd);
         tocDialog.show(getFragmentManager(), "tocDialog");
     }
+
+    private void moveToMyLocation(){
+    	BasicView view = (BasicView) this.wwd.getView();
+        Globe globe = this.wwd.getModel().getGlobe();
+        view.setLookAtPosition(Position.fromDegrees(mLocationManager.getLatitude(), mLocationManager.getLongitude(),
+            globe.getElevation(Angle.fromDegrees(mLocationManager.getLatitude()), Angle.fromDegrees(mLocationManager.getLongitude()))));
+        view.setRange(COMO_VIEW_DISTANCE_KM);
+    }
+    
+	@Override
+	public void onLocationUpdate(double latitude, double longitude,
+			Double altitude) {
+		mMenu.findItem(R.id.menu_my_location).setEnabled(true);
+	}
+
+	@Override
+	public void onGPSStatusUpdate(int status) {
+		// TODO Auto-generated method stub
+		
+	}
 }
