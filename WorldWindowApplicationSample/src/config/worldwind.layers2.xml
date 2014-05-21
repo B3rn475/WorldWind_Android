@@ -10,6 +10,21 @@
         className="gov.nasa.worldwind.layers.SkyGradientLayer"
         title="Sky" />
     <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.WorldMapLayer"
+        title="World Map" />
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.CompassLayer"
+        title="Compass" />
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.ScalebarLayer"
+        title="Scale Bar" />
+    <Layer
+        actuate="onLoad"
+        href="config/Earth/OpenStreetMapLayer.xml" />
+    <Layer
         actuate="onRequest"
         className="gov.nasa.worldwind.layers.Earth.BMNGOneImage" >
         <!-- Individual properties can be specified within Layer entries, like this: -->
@@ -23,21 +38,7 @@
     <Layer
         actuate="onRequest"
         href="config/Earth/LandsatI3WMSLayer.xml" />
-    <!--
-          <Layer
+    <Layer
         actuate="onRequest"
-        href="config/Earth/MSVirtualEarthAerialLayer.xml" />
-    -->
-    <Layer
-        actuate="onLoad"
-        className="gov.nasa.worldwind.layers.WorldMapLayer"
-        title="World Map" />
-    <Layer
-        actuate="onLoad"
-        className="gov.nasa.worldwind.layers.CompassLayer"
-        title="Compass" />
-    <Layer
-        actuate="onLoad"
-        className="gov.nasa.worldwind.layers.ScalebarLayer"
-        title="Scale Bar" />
+        href="config/Earth/MSVirtualEarthAerialLayer.xml" />
 </LayerList>
