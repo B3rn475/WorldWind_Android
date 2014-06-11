@@ -22,27 +22,44 @@ import gov.nasa.worldwind.WorldWindowGLSurfaceView;
 import gov.nasa.worldwind.avlist.AVKey;
 import gov.nasa.worldwind.geom.Angle;
 import gov.nasa.worldwind.geom.Position;
+import gov.nasa.worldwind.geom.Sector;
 import gov.nasa.worldwind.globes.Globe;
+import gov.nasa.worldwind.kml.KMLConstants;
+import gov.nasa.worldwind.kml.KMLRoot;
+import gov.nasa.worldwind.kml.impl.KMLController;
 import gov.nasa.worldwind.layers.Layer;
 import gov.nasa.worldwind.layers.LayerList;
+import gov.nasa.worldwind.layers.RenderableLayer;
+import gov.nasa.worldwind.render.Color;
+import gov.nasa.worldwind.render.DrawContext;
+import gov.nasa.worldwind.render.GPSMarker;
+import gov.nasa.worldwind.render.GPSMarker.PositionColors;
+import gov.nasa.worldwind.render.SurfaceImage;
 import it.trilogis.android.ww.R;
 import it.trilogis.android.ww.dialogs.AddWMSDialog;
 import it.trilogis.android.ww.dialogs.TocDialog;
 import it.trilogis.android.ww.dialogs.AddWMSDialog.OnAddWMSLayersListener;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+import it.polimi.models.Coordinate;
+import it.polimi.models.ImageMarker;
+import it.polimi.models.SquareMarker;
 import it.polimi.snowwatch.LocationManager;
 
 /**
@@ -305,15 +322,85 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
     private void moveToMyLocation(){
     	BasicView view = (BasicView) this.wwd.getView();
         Globe globe = this.wwd.getModel().getGlobe();
-        view.setLookAtPosition(Position.fromDegrees(mLocationManager.getLatitude(), mLocationManager.getLongitude(),
-            globe.getElevation(Angle.fromDegrees(mLocationManager.getLatitude()), Angle.fromDegrees(mLocationManager.getLongitude()))));
-        view.setRange(COMO_VIEW_DISTANCE_KM);
+        view.animateTo(Position.fromDegrees(mLocationManager.getLatitude(), mLocationManager.getLongitude(),
+                globe.getElevation(Angle.fromDegrees(mLocationManager.getLatitude()), Angle.fromDegrees(mLocationManager.getLongitude()))),
+                COMO_VIEW_DISTANCE_KM, 
+                Angle.fromDegrees(COMO_VIEW_HEADING),
+                Angle.fromDegrees(COMO_VIEW_TILT), this.wwd);
+        /*view.setLookAtPosition(Position.fromDegrees(mLocationManager.getLatitude(), mLocationManager.getLongitude(),
+            globe.getElevation(Angle.fromDegrees(mLocationManager.getLatitude()), Angle.fromDegrees(mLocationManager.getLongitude()))));*/
+        //view.setRange(COMO_VIEW_DISTANCE_KM);
     }
     
 	@Override
 	public void onLocationUpdate(double latitude, double longitude,
 			Double altitude) {
 		mMenu.findItem(R.id.menu_my_location).setEnabled(true);
+		final SquareMarker marker = new SquareMarker(new Coordinate(latitude, longitude));
+		for (Layer l : this.wwd.getModel().getLayers()){
+			if (l instanceof RenderableLayer){
+				if (!l.getName().startsWith("My Location Scale x")) continue;
+				int scale = Integer.parseInt(l.getName().substring("My Location Scale x".length()));
+				RenderableLayer rl = (RenderableLayer)l;
+				rl.removeAllRenderables();
+				final double factor = 18;
+				final double size = factor * scale;
+				final Coordinate lb = marker.getLowerBoundaryCoordinate(size);
+				final Coordinate ub = marker.getUpperBoundaryCoordinate(size);
+				rl.addRenderable(new SurfaceImage(getFilePath("gps.png"), new Sector(Angle.fromDegrees(lb.latitude), Angle.fromDegrees(ub.latitude), Angle.fromDegrees(lb.longitude), Angle.fromDegrees(ub.longitude))));
+			}
+		}
+		updateMarkers(latitude, longitude);
+	}
+	
+	private void updateMarkers(double latitude, double longitude){
+		final List<SquareMarker> markers = new ArrayList<SquareMarker>();
+		final int n = 8;
+		final double dist = 0.01;
+		for (int i=0; i<n; i++){
+			markers.add(new ImageMarker(new Coordinate(latitude+Math.sin(Math.PI * 2.0 / n * i)*dist, longitude+Math.cos(Math.PI * 2.0 / n * i)*dist)));
+		}
+		for (Layer l : this.wwd.getModel().getLayers()){
+			if (l instanceof RenderableLayer){
+				if (!l.getName().startsWith("Image Location Scale x")) continue;
+				int scale = Integer.parseInt(l.getName().substring("Image Location Scale x".length()));
+				RenderableLayer rl = (RenderableLayer)l;
+				rl.removeAllRenderables();
+				final double factor = 21;
+				final double size = factor * scale;
+				for (final SquareMarker marker : markers){
+					final Coordinate lb = marker.getLowerBoundaryCoordinate(size);
+					final Coordinate ub = marker.getUpperBoundaryCoordinate(size);
+					rl.addRenderable(new SurfaceImage(getFilePath("photo.png"), new Sector(Angle.fromDegrees(lb.latitude), Angle.fromDegrees(ub.latitude), Angle.fromDegrees(lb.longitude), Angle.fromDegrees(ub.longitude))));
+				}
+			}
+		}
+	}
+	
+	private String getFilePath(final String name){
+		if (!this.getFileStreamPath(name).exists()){
+			try {
+				FileOutputStream oStream = this.openFileOutput(name, MODE_WORLD_READABLE);
+				InputStream iStream = this.getAssets().open(name);
+				pipe(iStream, oStream);
+				oStream.flush();
+				oStream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return this.getFileStreamPath(name).getAbsolutePath();
+	}
+	
+	private void pipe(InputStream is, OutputStream os) throws IOException {
+		  int n;
+		  byte[] buffer = new byte[1024];
+		  while((n = is.read(buffer)) > -1) {
+		    os.write(buffer, 0, n);   // Don't allow any extra bytes to creep in, final write
+		  }
+		 os.close ();
 	}
 
 	@Override

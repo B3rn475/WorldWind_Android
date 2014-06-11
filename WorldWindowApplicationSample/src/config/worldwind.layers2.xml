@@ -25,12 +25,165 @@
         actuate="onLoad"
         href="config/Earth/OpenStreetMapLayer.xml" />
     <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x1" >
+        <Property
+            name="MaxActiveAltitude"
+            value="1e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x1" >
+        <Property
+            name="MaxActiveAltitude"
+            value="1e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x2" >
+        <Property
+            name="MinActiveAltitude"
+            value="1e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="2e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x2" >
+        <Property
+            name="MinActiveAltitude"
+            value="1e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="2e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x4" >
+        <Property
+            name="MinActiveAltitude"
+            value="2e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="4e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x4" >
+        <Property
+            name="MinActiveAltitude"
+            value="2e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="4e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x8" >
+        <Property
+            name="MinActiveAltitude"
+            value="4e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="8e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x8" >
+        <Property
+            name="MinActiveAltitude"
+            value="4e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="8e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x16" >
+        <Property
+            name="MinActiveAltitude"
+            value="8e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="16e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x16" >
+        <Property
+            name="MinActiveAltitude"
+            value="8e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="16e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x32" >
+        <Property
+            name="MinActiveAltitude"
+            value="16e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="32e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x32" >
+        <Property
+            name="MinActiveAltitude"
+            value="16e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="32e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x64" >
+        <Property
+            name="MinActiveAltitude"
+            value="32e3" />
+        <Property
+            name="MaxActiveAltitude"
+            value="64e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="Image Location Scale x64" >
+        <Property
+            name="MinActiveAltitude"
+            value="32e3" />
+    </Layer>
+    <Layer
+        actuate="onLoad"
+        className="gov.nasa.worldwind.layers.RenderableLayer"
+        title="My Location Scale x128" >
+        <Property
+            name="MinActiveAltitude"
+            value="64e3" />
+    </Layer>
+    <Layer
         actuate="onRequest"
         className="gov.nasa.worldwind.layers.Earth.BMNGOneImage" >
         <!-- Individual properties can be specified within Layer entries, like this: -->
         <Property
             name="MinActiveAltitude"
-            value="3e5" />
+            value="1e5" />
     </Layer>
     <Layer
         actuate="onRequest"
