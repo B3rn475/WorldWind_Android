@@ -57,6 +57,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 import it.polimi.models.Coordinate;
 import it.polimi.models.ImageMarker;
 import it.polimi.models.SquareMarker;
@@ -65,7 +66,7 @@ import it.polimi.snowwatch.LocationManager;
 /**
  * @author Nicola Dorigatti
  */
-public class WorldWindowActivity extends Activity implements LocationManager.OnLocationEventListener {
+public class WorldWindowActivity extends Activity implements LocationManager.OnLocationEventListener, WorldWindowGLSurfaceView.OnCoordinateClickListener {
     static {
         System.setProperty("gov.nasa.worldwind.app.config.document", "config/wwandroiddemo.xml");
     }
@@ -83,6 +84,8 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
     private final static double COMO_VIEW_DISTANCE_KM = 13000d;
 
     protected WorldWindowGLSurfaceView wwd;
+    
+    private final List<ImageMarker> markers = new ArrayList<ImageMarker>();
     
     private LocationManager mLocationManager = null;
     private Menu mMenu = null;
@@ -130,6 +133,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
         this.wwd.setModel((Model) WorldWind.createConfigurationComponent(AVKey.MODEL_CLASS_NAME));
         this.setupView();
         this.setupTextViews();
+        this.setupLocationListener();
         
         mLocationManager = new LocationManager(this);
         mLocationManager.setLocationUpdateEventListener(this);
@@ -289,6 +293,10 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
         TextView lonTextView = (TextView) findViewById(R.id.lonvalue);
         this.wwd.setLongitudeText(lonTextView);
     }
+    
+    protected void setupLocationListener(){
+    	this.wwd.setCoordinatesClickListener(this);
+    }
 
     // ============== Add WMS ======================= //
     private void openAddWMSDialog() {
@@ -354,11 +362,11 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 	}
 	
 	private void updateMarkers(double latitude, double longitude){
-		final List<SquareMarker> markers = new ArrayList<SquareMarker>();
+		markers.clear();
 		final int n = 8;
 		final double dist = 0.01;
 		for (int i=0; i<n; i++){
-			markers.add(new ImageMarker(new Coordinate(latitude+Math.sin(Math.PI * 2.0 / n * i)*dist, longitude+Math.cos(Math.PI * 2.0 / n * i)*dist)));
+			markers.add(new ImageMarker(new Coordinate(latitude+Math.sin(Math.PI * 2.0 / n * i)*dist, longitude+Math.cos(Math.PI * 2.0 / n * i)*dist), "Bella " + i));
 		}
 		for (Layer l : this.wwd.getModel().getLayers()){
 			if (l instanceof RenderableLayer){
@@ -407,5 +415,39 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 	public void onGPSStatusUpdate(int status) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void CoordianteClick(double latitude, double longitude) {
+		final BasicView view = (BasicView) this.wwd.getView();
+		final double elevation = view.getEyePosition(this.wwd.getModel().getGlobe()).elevation;
+		final Coordinate clickLocation = new Coordinate(latitude, longitude);
+		for (Layer l : this.wwd.getModel().getLayers()){
+			if (l instanceof RenderableLayer){
+				if (!l.getName().startsWith("Image Location Scale x")) continue;
+				int scale = Integer.parseInt(l.getName().substring("Image Location Scale x".length()));
+				RenderableLayer rl = (RenderableLayer)l;
+				if (!rl.isEnabled()) continue;
+				if (elevation > rl.getMaxActiveAltitude()) continue;
+				if (elevation < rl.getMinActiveAltitude()) continue;
+				final double factor = 50;
+				final double size = factor * scale;
+				ImageMarker nearer = null;
+				double distance = Double.MAX_VALUE;
+				for (final ImageMarker marker : markers){
+					if (marker.isInside(new Coordinate(latitude, longitude), size)){
+						final double d = clickLocation.distance(marker.center);
+						if (d < distance){
+							nearer = marker;
+							distance = d;
+						}
+					}
+				}
+				if (nearer != null){
+					Toast.makeText(this, nearer.name, Toast.LENGTH_SHORT).show();
+				}
+				return;
+			}
+		}
 	}
 }

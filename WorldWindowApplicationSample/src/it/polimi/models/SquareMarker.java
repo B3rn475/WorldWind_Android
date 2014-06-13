@@ -34,4 +34,10 @@ public class SquareMarker {
     private static double radToDeg(double radians) {
         return (180.0 * radians) / Math.PI;
     }
+
+	public boolean isInside(final Coordinate coordinates, final double size) {
+		final Coordinate lb = this.getLowerBoundaryCoordinate(size);
+		final Coordinate ub = this.getUpperBoundaryCoordinate(size);
+		return coordinates.latitude >= lb.latitude && coordinates.latitude <= ub.latitude && coordinates.longitude >= lb.longitude && coordinates.longitude <= ub.longitude;
+	}
 }

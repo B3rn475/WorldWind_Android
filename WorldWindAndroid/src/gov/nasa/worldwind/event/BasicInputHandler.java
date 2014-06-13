@@ -268,6 +268,7 @@ public class BasicInputHandler extends WWObjectImpl implements InputHandler
                 public void run()
                 {
                     updateLatLonText(latText, lonText);
+                    clickLatLon(position.latitude, position.longitude);
                 }
             });
         }
@@ -294,6 +295,10 @@ public class BasicInputHandler extends WWObjectImpl implements InputHandler
             latText.setText(latitudeText);
             lonText.setText(longitudeText);
         }
+    }
+    
+    public void clickLatLon(Angle latitude, Angle longitude){
+    	((WorldWindowGLSurfaceView) this.eventSource).getCoordinatesClickListener().CoordianteClick(latitude.degrees, longitude.degrees);
     }
 
     // given the current and previous locations of two points, compute the angle of the

@@ -38,6 +38,7 @@ public class WorldWindowGLSurfaceView extends GLSurfaceView implements GLSurface
     protected int viewportHeight;
     protected TextView latitudeText;
     protected TextView longitudeText;
+    protected OnCoordinateClickListener clickListener;
 
     public WorldWindowGLSurfaceView(Context context)
     {
@@ -293,6 +294,14 @@ public class WorldWindowGLSurfaceView extends GLSurfaceView implements GLSurface
     {
         this.longitudeText = lonView;
     }
+    
+    public void setCoordinatesClickListener(OnCoordinateClickListener listener){
+    	this.clickListener = listener;
+    }
+    
+    public OnCoordinateClickListener getCoordinatesClickListener(){
+    	return this.clickListener;
+    }
 
     /** {@inheritDoc} */
     public GpuResourceCache getGpuResourceCache()
@@ -502,5 +511,9 @@ public class WorldWindowGLSurfaceView extends GLSurfaceView implements GLSurface
     public void onMessage(Message message)
     {
         // Empty implementation
+    }
+    
+    public interface OnCoordinateClickListener {
+    	public void CoordianteClick(double latitude, double longitude);
     }
 }
