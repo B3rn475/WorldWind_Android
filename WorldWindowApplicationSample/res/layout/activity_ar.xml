@@ -1,0 +1,201 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0099cc"
+    tools:context="it.trilogis.android.ww.ARActivity"
+    android:screenOrientation="fullSensor">
+    
+    <!--
+         The primary full-screen view. This can be replaced with whatever view
+         is needed to present your content, e.g. VideoView, SurfaceView,
+         TextureView, etc.
+    -->
+    
+    <FrameLayout
+    android:id="@+id/camera_preview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    />
+    <!--
+         This FrameLayout insets its children based on system windows using
+         android:fitsSystemWindows.
+    -->
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true" >
+
+        <LinearLayout
+            android:id="@+id/fullscreen_content_controls"
+            style="?metaButtonBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@color/black_overlay"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent" >
+
+            <ToggleButton
+                android:id="@+id/sensors_correction_toogle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_sysbar_quicksettings"
+                android:gravity="center"
+			    android:textOff=""
+			    android:textOn=""
+			    android:textSize="0sp"
+                android:onClick="onSensorsCorrectionClicked"
+                android:text="@string/sensors_visibility"/>
+            <ToggleButton
+                android:id="@+id/peaks_selection_toogle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/ic_menu_sort_by_size"
+                android:gravity="center"
+			    android:textOff=""
+			    android:textOn=""
+			    android:textSize="0sp"
+                android:onClick="onPeakSelectionClicked"
+                android:text="@string/sensors_visibility"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/wait_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/overlay_backgound"
+            android:visibility="invisible">
+            
+            <ProgressBar
+                android:id="@+id/wait_progress_bar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:indeterminate="false" />
+
+            <TextView
+                android:id="@+id/wait_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/sensors_correction_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical"
+            android:background="@drawable/overlay_backgound"
+            android:visibility="invisible">
+			
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/azimuth"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <SeekBar
+                android:id="@+id/seek_bar_azimuth"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:max="360"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/pitch"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <SeekBar
+                android:id="@+id/seek_bar_pitch"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:max="360" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/roll"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <SeekBar
+                android:id="@+id/seek_bar_roll"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:max="360" />
+			
+            <Button 
+                android:id="@+id/default_correction"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/default_corrections"
+                android:onClick="onDefaultCorrectionsClicked"
+                />
+        </LinearLayout>
+        
+        <LinearLayout
+            android:id="@+id/mountain_selection_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical"
+            android:background="@drawable/overlay_backgound"
+            android:visibility="invisible">
+			
+           <ListView
+               android:layout_weight="1"
+               android:id="@+id/peaks_list_view"
+               android:layout_width="fill_parent"
+               android:layout_height="0dp"
+               android:layout_gravity="fill_vertical"
+               />
+           <LinearLayout 
+               android:layout_height="wrap_content"
+               android:layout_width="wrap_content"
+               android:layout_gravity="center_horizontal">
+	           <Button
+	               android:id="@+id/all_peaks"
+	               android:layout_width="wrap_content"
+	               android:layout_height="wrap_content"
+	               android:text="@string/all_peaks"
+	               android:onClick="onAllPeaksSelection"
+	               />
+	           <Button
+	               android:id="@+id/default_peaks"
+	               android:layout_width="wrap_content"
+	               android:layout_height="wrap_content"
+	               android:text="@string/default_peaks"
+	               android:onClick="onDefaultPeaksSelection"
+	               />
+	           <Button
+	               android:id="@+id/no_peaks"
+	               android:layout_width="wrap_content"
+	               android:layout_height="wrap_content"
+	               android:text="@string/no_peaks"
+	               android:onClick="onNonePeaksSelection"
+	               />
+           </LinearLayout>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -168,86 +169,17 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
-            case R.id.menu_show_wms:
-                // TODO show webview with trilogis INFO! See walk&hike app
+            case R.id.menu_show_camera:
+            	Intent intent = new Intent(this, ARActivity.class);
+            	Bundle b = new Bundle();
+            	b.putDouble("latitude", mLocationManager.getLatitude());
+            	b.putDouble("longitude", mLocationManager.getLongitude());
+            	Globe globe = this.wwd.getModel().getGlobe();
+            	b.putDouble("altitude", globe.getElevation(Angle.fromDegrees(mLocationManager.getLatitude()), Angle.fromDegrees(mLocationManager.getLongitude())));
+            	b.putSerializable("markers", new ArrayList<ImageMarker>(markers));
+            	intent.putExtras(b);
+            	startActivity(intent);
                 break;
-            // case R.id.menu_toggle_compass:
-            // if (null == cl) {
-            // cl = searchSpecificLayer(CompassLayer.class);
-            // }
-            // if (null == cl) {
-            // cl = new CompassLayer();
-            // cl.setName("Compass");
-            // if (this.wwd.getModel().getLayers().add(cl)) Log.d(TAG, "CompassLayer created from scratch and added!!");
-            // } else {
-            // if (this.wwd.getModel().getLayers().contains(cl)) {
-            // cl.setEnabled(!cl.isEnabled());
-            // // this.wwd.getModel().getLayers().remove(cl);
-            // Log.d(TAG, "CompassLayer Removed!!");
-            // } else {
-            // this.wwd.getModel().getLayers().addIfAbsent(cl);
-            // cl.setEnabled(true);
-            // Log.d(TAG, "CompassLayer not created but added!!");
-            // }
-            // }
-            // break;
-            // case R.id.menu_toggle_worldmap:
-            // if (null == wml) {
-            // wml = searchSpecificLayer(WorldMapLayer.class);
-            // }
-            // if (null == wml) {
-            // wml = new WorldMapLayer();
-            // wml.setName("WorldMap");
-            // if (this.wwd.getModel().getLayers().add(wml)) Log.d(TAG, "WorldMapLayer created from scratch and added!");
-            // } else {
-            // if (this.wwd.getModel().getLayers().contains(wml)) {
-            // wml.setEnabled(!wml.isEnabled());
-            // Log.d(TAG, "WorldMapLayer Removed!!");
-            // } else {
-            // this.wwd.getModel().getLayers().addIfAbsent(wml);
-            // wml.setEnabled(true);
-            // Log.d(TAG, "WorldMapLayer not created but added!!");
-            // }
-            // }
-            // break;
-            // case R.id.menu_toggle_sky:
-            // if (null == sgl) {
-            // sgl = searchSpecificLayer(SkyGradientLayer.class);
-            // }
-            // if (null == sgl) {
-            // sgl = new SkyGradientLayer();
-            // sgl.setName("Sky");
-            // if (this.wwd.getModel().getLayers().add(sgl)) Log.d(TAG, "SkyGradientLayer created from scratch and added!");
-            // } else {
-            // if (this.wwd.getModel().getLayers().contains(sgl)) {
-            // sgl.setEnabled(!sgl.isEnabled());
-            // Log.d(TAG, "SkyGradientLayer Removed!!");
-            // } else {
-            // this.wwd.getModel().getLayers().addIfAbsent(sgl);
-            // sgl.setEnabled(true);
-            // Log.d(TAG, "SkyGradientLayer not created but added!!");
-            // }
-            // }
-            // break;
-            // case R.id.menu_toggle_scalebar:
-            // if (null == sbl) {
-            // sbl = searchSpecificLayer(ScalebarLayer.class);
-            // }
-            // if (null == sbl) {
-            // sbl = new ScalebarLayer();
-            // sbl.setName("Scale Bar");
-            // if (this.wwd.getModel().getLayers().add(sbl)) Log.d(TAG, "ScalebarLayer created from scratch and added!");
-            // } else {
-            // if (this.wwd.getModel().getLayers().contains(sbl)) {
-            // sbl.setEnabled(!sbl.isEnabled());
-            // Log.d(TAG, "ScaleBarLayer Removed!!");
-            // } else {
-            // this.wwd.getModel().getLayers().addIfAbsent(sbl);
-            // sbl.setEnabled(true);
-            // Log.d(TAG, "ScaleBarLayer not created but added!!");
-            // }
-            // }
-            // break;
             case R.id.menu_my_location:
             	moveToMyLocation();
                 break;
@@ -344,6 +276,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 	public void onLocationUpdate(double latitude, double longitude,
 			Double altitude) {
 		mMenu.findItem(R.id.menu_my_location).setEnabled(true);
+		mMenu.findItem(R.id.menu_show_camera).setEnabled(true);
 		final SquareMarker marker = new SquareMarker(new Coordinate(latitude, longitude));
 		for (Layer l : this.wwd.getModel().getLayers()){
 			if (l instanceof RenderableLayer){
@@ -365,8 +298,9 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 		markers.clear();
 		final int n = 8;
 		final double dist = 0.01;
+		Globe globe = this.wwd.getModel().getGlobe();
 		for (int i=0; i<n; i++){
-			markers.add(new ImageMarker(new Coordinate(latitude+Math.sin(Math.PI * 2.0 / n * i)*dist, longitude+Math.cos(Math.PI * 2.0 / n * i)*dist), "Bella " + i));
+			markers.add(new ImageMarker(new Coordinate(latitude+Math.sin(Math.PI * 2.0 / n * i)*dist, longitude+Math.cos(Math.PI * 2.0 / n * i)*dist), globe.getElevation(Angle.fromDegrees(latitude), Angle.fromDegrees(longitude)), "Bella " + i));
 		}
 		for (Layer l : this.wwd.getModel().getLayers()){
 			if (l instanceof RenderableLayer){
@@ -430,7 +364,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 				if (!rl.isEnabled()) continue;
 				if (elevation > rl.getMaxActiveAltitude()) continue;
 				if (elevation < rl.getMinActiveAltitude()) continue;
-				final double factor = 50;
+				final double factor = 100;
 				final double size = factor * scale;
 				ImageMarker nearer = null;
 				double distance = Double.MAX_VALUE;

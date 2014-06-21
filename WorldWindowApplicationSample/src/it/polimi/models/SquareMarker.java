@@ -1,6 +1,13 @@
 package it.polimi.models;
 
-public class SquareMarker {
+import java.io.Serializable;
+
+public class SquareMarker implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public final Coordinate center;
 	
 	private static double EARTH_RADIUS = 6371e3;
