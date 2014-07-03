@@ -387,7 +387,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 	
 	private void onMarkerClick(ImageMarker marker){
 		//Toast.makeText(this, marker.name, Toast.LENGTH_SHORT).show();
-		Intent intent = new Intent(this, ARActivity.class);
+		Intent intent = new Intent(this, POIView.class);
     	Bundle b = new Bundle();
     	b.putSerializable("marker", marker);
     	intent.putExtras(b);
