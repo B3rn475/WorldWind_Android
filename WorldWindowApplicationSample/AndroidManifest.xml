@@ -4,7 +4,7 @@
     National Aeronautics and Space Administration.
     All Rights Reserved.
 
-    $Id: AndroidManifest.xml 59 2011-09-20 18:41:08Z dcollins $
+    $Id: AndroidManifest.xml 59 2011-09-20 18:41:08Z dcollins $
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.trilogis.android.ww"
@@ -17,15 +17,17 @@
         android:targetSdkVersion="19" />
     <!-- Specify all of the Android features that World Wind requires: OpenGL ES 2.0. -->
     <uses-feature android:glEsVersion="0x00020000" />
-    <uses-feature 
-        android:name="android.hardware.camera" android:required="true" />
-    <uses-feature 
-        android:name="android.hardware.camera.autofocus" android:required="true" />
-    <uses-feature 
-        android:name="android.hardware.location.gps" android:required="true"/>
-    <uses-permission 
-        android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="true" />
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Specify all of the Android permissions that World Wind requires: internet. -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -38,7 +40,7 @@
     application or checking in changes to this file.
 
     Note: WWAndroidDemo icons are taken from www.androidicons.com. These icons are licensed under the Creative Commons
-    Attribution 3.0 Unported License.
+    Attribution 3.0 Unported License.
     -->
     <supports-screens
         android:largeScreens="true"
@@ -58,7 +60,7 @@
         android:launchMode attribute as singleTask so that the WorldWindowActivity acts as an entry point for the
         application. Configure the android:configChanges attribute to denote that our application handles orientation
         and keyboard availability changes itself. This ensures that the application is not shut down and restarted due
-        to either of these changes.
+        to either of these changes.
         -->
         <activity
             android:name="it.trilogis.android.ww.WorldWindowActivity"
@@ -76,6 +78,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_ar"
             android:theme="@style/FullscreenTheme" >
+        </activity>
+        <activity
+            android:name="it.trilogis.android.ww.POIView"
+            android:label="@string/title_activity_poiview" >
         </activity>
     </application>
 
