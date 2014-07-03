@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,17 +23,23 @@ public class POIView extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_poiview);
-
+		
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
-		
+	}
+	
+	@Override
+	protected void onStart(){
+		super.onStart();
 		Bundle b = getIntent().getExtras();
+		
 		ImageMarker marker = (ImageMarker)b.getSerializable("marker");
+		
 		TextView title = (TextView)findViewById(R.id.title);
+		
 		title.setText(marker.name);
-		//findViewById(R.id.image);
 	}
 
 	@Override
