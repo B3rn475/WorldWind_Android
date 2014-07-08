@@ -41,7 +41,7 @@ public class POIView extends Activity {
 		ImageView image = (ImageView)findViewById(R.id.image);
 		
 		title.setText(marker.name);
-		Picasso.with(this).load(marker.url).fit().centerInside().into(image);
+		Picasso.with(this).load(marker.url).placeholder(R.drawable.mountain).fit().centerInside().into(image);
 	}
 
 	@Override
