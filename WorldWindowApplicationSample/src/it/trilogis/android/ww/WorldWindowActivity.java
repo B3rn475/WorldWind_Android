@@ -94,6 +94,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
     private LocationManager mLocationManager = null;
     private POIDownloader mDownloader = null;
     private Menu mMenu = null;
+    private boolean firstRun = true;
 
     // private CompassLayer cl;
     // private WorldMapLayer wml;
@@ -296,7 +297,10 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 			}
 		}
 		updateMarkers(latitude, longitude);
-		moveToMyLocation();
+		if (firstRun) {
+			moveToMyLocation();
+			firstRun = false;
+		}
 	}
 	
 	private void updateMarkers(double latitude, double longitude){
