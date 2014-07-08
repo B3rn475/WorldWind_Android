@@ -1,7 +1,8 @@
-package it.trilogis.android.ww;
+package it.polimi.snowwatch;
 
 import java.util.ArrayList;
 
+import it.trilogis.android.ww.R;
 import it.trilogis.android.ww.util.SystemUiHider;
 
 
@@ -22,11 +23,6 @@ import android.widget.SeekBar;
 import android.widget.ToggleButton;
 import it.polimi.models.Coordinate;
 import it.polimi.models.ImageMarker;
-import it.polimi.snowwatch.Mountain;
-import it.polimi.snowwatch.MountainAdapter;
-import it.polimi.snowwatch.MountainOverlay;
-import it.polimi.snowwatch.OrientationManager;
-import it.polimi.snowwatch.CameraPreview;
 import it.polimi.snowwatch.utils.Vector3;
 
 

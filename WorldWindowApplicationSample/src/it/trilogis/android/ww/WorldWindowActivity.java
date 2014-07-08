@@ -62,6 +62,7 @@ import android.widget.Toast;
 import it.polimi.models.Coordinate;
 import it.polimi.models.ImageMarker;
 import it.polimi.models.SquareMarker;
+import it.polimi.snowwatch.ARActivity;
 import it.polimi.snowwatch.LocationManager;
 import it.polimi.snowwatch.POIDownloader;
 import it.polimi.snowwatch.POIDownloader.OnPOIsUpdateEventListener;

@@ -74,7 +74,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="it.trilogis.android.ww.ARActivity"
+            android:name="it.polimi.snowwatch.ARActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_ar"
             android:theme="@style/FullscreenTheme" >
