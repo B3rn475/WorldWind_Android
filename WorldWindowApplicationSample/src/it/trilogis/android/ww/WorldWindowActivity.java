@@ -63,11 +63,13 @@ import it.polimi.models.Coordinate;
 import it.polimi.models.ImageMarker;
 import it.polimi.models.SquareMarker;
 import it.polimi.snowwatch.LocationManager;
+import it.polimi.snowwatch.POIDownloader;
+import it.polimi.snowwatch.POIDownloader.OnPOIsUpdateEventListener;
 
 /**
  * @author Nicola Dorigatti
  */
-public class WorldWindowActivity extends Activity implements LocationManager.OnLocationEventListener, WorldWindowGLSurfaceView.OnCoordinateClickListener {
+public class WorldWindowActivity extends Activity implements LocationManager.OnLocationEventListener, WorldWindowGLSurfaceView.OnCoordinateClickListener, OnPOIsUpdateEventListener {
     static {
         System.setProperty("gov.nasa.worldwind.app.config.document", "config/wwandroiddemo.xml");
     }
@@ -89,6 +91,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
     private final List<ImageMarker> markers = new ArrayList<ImageMarker>();
     
     private LocationManager mLocationManager = null;
+    private POIDownloader mDownloader = null;
     private Menu mMenu = null;
 
     // private CompassLayer cl;
@@ -296,27 +299,11 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 	
 	private void updateMarkers(double latitude, double longitude){
 		markers.clear();
-		final int n = 8;
-		final double dist = 0.01;
-		Globe globe = this.wwd.getModel().getGlobe();
-		for (int i=0; i<n; i++){
-			markers.add(new ImageMarker(new Coordinate(latitude+Math.sin(Math.PI * 2.0 / n * i)*dist, longitude+Math.cos(Math.PI * 2.0 / n * i)*dist), globe.getElevation(Angle.fromDegrees(latitude), Angle.fromDegrees(longitude)), "Bella " + i));
+		if (mDownloader == null) {
+			mDownloader = new POIDownloader();
+			mDownloader.setLandscapeUpdateListener(this);
 		}
-		for (Layer l : this.wwd.getModel().getLayers()){
-			if (l instanceof RenderableLayer){
-				if (!l.getName().startsWith("Image Location Scale x")) continue;
-				int scale = Integer.parseInt(l.getName().substring("Image Location Scale x".length()));
-				RenderableLayer rl = (RenderableLayer)l;
-				rl.removeAllRenderables();
-				final double factor = 21;
-				final double size = factor * scale;
-				for (final SquareMarker marker : markers){
-					final Coordinate lb = marker.getLowerBoundaryCoordinate(size);
-					final Coordinate ub = marker.getUpperBoundaryCoordinate(size);
-					rl.addRenderable(new SurfaceImage(getFilePath("photo.png"), new Sector(Angle.fromDegrees(lb.latitude), Angle.fromDegrees(ub.latitude), Angle.fromDegrees(lb.longitude), Angle.fromDegrees(ub.longitude))));
-				}
-			}
-		}
+		mDownloader.setCoordinates(latitude, longitude);
 	}
 	
 	private String getFilePath(final String name){
@@ -392,5 +379,35 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
     	b.putSerializable("marker", marker);
     	intent.putExtras(b);
     	startActivity(intent);
+	}
+
+	@Override
+	public void onPOIsUpdate(List<ImageMarker> ms) {
+		Globe globe = this.wwd.getModel().getGlobe();
+		for (ImageMarker marker : ms) {
+			markers.add(new ImageMarker(marker.center, globe.getElevation(Angle.fromDegrees(marker.center.latitude), Angle.fromDegrees(marker.center.longitude)), marker.name, marker.url));
+		}
+		final String fPath = getFilePath("photo.png");
+		for (Layer l : this.wwd.getModel().getLayers()){
+			if (l instanceof RenderableLayer){
+				if (!l.getName().startsWith("Image Location Scale x")) continue;
+				int scale = Integer.parseInt(l.getName().substring("Image Location Scale x".length()));
+				RenderableLayer rl = (RenderableLayer)l;
+				rl.removeAllRenderables();
+				final double factor = 21;
+				final double size = factor * scale;
+				for (final SquareMarker marker : markers){
+					final Coordinate lb = marker.getLowerBoundaryCoordinate(size);
+					final Coordinate ub = marker.getUpperBoundaryCoordinate(size);
+					rl.addRenderable(new SurfaceImage(fPath, new Sector(Angle.fromDegrees(lb.latitude), Angle.fromDegrees(ub.latitude), Angle.fromDegrees(lb.longitude), Angle.fromDegrees(ub.longitude))));
+				}
+			}
+		}
+	}
+
+	@Override
+	public void onDownloadError(String error) {
+		// TODO Auto-generated method stub
+		
 	}
 }

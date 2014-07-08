@@ -122,6 +122,7 @@ public class ARActivity extends Activity implements
 		Bundle b = getIntent().getExtras();
 		Coordinate location = new Coordinate(b.getDouble("latitude"), b.getDouble("longitude"));
 		double altitude = b.getDouble("altitude");
+		@SuppressWarnings("unchecked")
 		ArrayList<ImageMarker> markers = (ArrayList<ImageMarker>)b.getSerializable("markers");
 		
 		for (ImageMarker marker : markers) {
