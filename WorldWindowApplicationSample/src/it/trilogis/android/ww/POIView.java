@@ -1,21 +1,15 @@
 package it.trilogis.android.ww;
 
-import java.util.ArrayList;
-
-import it.polimi.models.Coordinate;
 import it.polimi.models.ImageMarker;
 import android.app.Activity;
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.os.Build;
 
 public class POIView extends Activity {
 
