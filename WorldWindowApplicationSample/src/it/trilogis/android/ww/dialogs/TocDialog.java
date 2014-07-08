@@ -21,7 +21,9 @@ import gov.nasa.worldwind.layers.LayerList;
 import it.trilogis.android.ww.R;
 import it.trilogis.android.ww.dialogs.AddWMSDialog.OnAddWMSLayersListener;
 import it.trilogis.android.ww.view.DragListView;
+
 import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -37,6 +39,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -192,6 +195,8 @@ public class TocDialog extends DialogFragment {
             });
             checkbox.setChecked(layer.isEnabled());
             checkbox.setText(layer.getName());
+            if (layer.getName().startsWith("My Location Scale x")) retval.setVisibility(View.GONE);
+            if (layer.getName().startsWith("Image Location Scale x")) retval.setVisibility(View.GONE);
             return retval;
         }
     }
