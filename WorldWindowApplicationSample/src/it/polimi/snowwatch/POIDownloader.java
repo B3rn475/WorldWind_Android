@@ -149,7 +149,6 @@ public class POIDownloader {
 					while ((aux = reader.readLine()) != null) {
 						builder.append(aux);
 					}
-					Log.d("uellaaaa", builder.toString());
 					ret = new JSONArray(builder.toString());
 				}
 			} catch (URISyntaxException e) { // impossible
