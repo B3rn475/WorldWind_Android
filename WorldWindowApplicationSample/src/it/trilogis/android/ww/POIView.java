@@ -1,14 +1,20 @@
 package it.trilogis.android.ww;
 
+import java.net.URI;
+
+import com.squareup.picasso.Picasso;
+
 import it.polimi.models.ImageMarker;
 import android.app.Activity;
 import android.app.Fragment;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class POIView extends Activity {
@@ -32,8 +38,10 @@ public class POIView extends Activity {
 		ImageMarker marker = (ImageMarker)b.getSerializable("marker");
 		
 		TextView title = (TextView)findViewById(R.id.title);
+		ImageView image = (ImageView)findViewById(R.id.image);
 		
 		title.setText(marker.name);
+		Picasso.with(this).load(marker.url).fit().centerInside().into(image);
 	}
 
 	@Override
