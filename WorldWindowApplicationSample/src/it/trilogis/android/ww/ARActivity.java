@@ -128,7 +128,7 @@ public class ARActivity extends Activity implements
 		for (ImageMarker marker : markers) {
 			mMountainOverlay.add(new Mountain(
 					marker.name,
-					(float)location.distance(marker.center),
+					(float)Math.ceil(location.distance(marker.center) / 20) * 20,
 					new Vector3((float) Math.cos(Math.toRadians(location.bearing(marker.center))),
 							(float) ((marker.altitude - altitude) / location.distance(marker.center)),
 							(float) Math.sin(Math.toRadians(location.bearing(marker.center))))
