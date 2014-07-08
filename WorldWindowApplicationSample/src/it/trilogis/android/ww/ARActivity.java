@@ -130,7 +130,7 @@ public class ARActivity extends Activity implements
 					marker.name,
 					(float)location.distance(marker.center),
 					new Vector3((float) Math.cos(Math.toRadians(location.bearing(marker.center))),
-							(float) ((marker.altitude - altitude) / location.distance(marker.center) * 1000),
+							(float) ((marker.altitude - altitude) / location.distance(marker.center)),
 							(float) Math.sin(Math.toRadians(location.bearing(marker.center))))
 					));
 		}
