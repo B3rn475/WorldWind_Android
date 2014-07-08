@@ -295,6 +295,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 			}
 		}
 		updateMarkers(latitude, longitude);
+		moveToMyLocation();
 	}
 	
 	private void updateMarkers(double latitude, double longitude){
