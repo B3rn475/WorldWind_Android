@@ -33,6 +33,10 @@ public class POIView extends Activity {
 	@Override
 	protected void onStart(){
 		super.onStart();
+		
+		/**
+		 * Get Parameters from intent bundle
+		 */
 		Bundle b = getIntent().getExtras();
 		
 		ImageMarker marker = (ImageMarker)b.getSerializable("marker");
@@ -40,7 +44,13 @@ public class POIView extends Activity {
 		TextView title = (TextView)findViewById(R.id.title);
 		ImageView image = (ImageView)findViewById(R.id.image);
 		
+		/**
+		 * Set the title of the image
+		 */
 		title.setText(marker.name);
+		/**
+		 * Load the image
+		 */
 		Picasso.with(this).load(marker.url).placeholder(R.drawable.mountain).fit().centerInside().into(image);
 	}
 
