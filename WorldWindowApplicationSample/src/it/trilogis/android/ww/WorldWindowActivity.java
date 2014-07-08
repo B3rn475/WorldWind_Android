@@ -307,7 +307,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 		markers.clear();
 		if (mDownloader == null) {
 			mDownloader = new POIDownloader();
-			mDownloader.setLandscapeUpdateListener(this);
+			mDownloader.setPOIsUpdateListener(this);
 		}
 		mDownloader.setCoordinates(latitude, longitude);
 	}

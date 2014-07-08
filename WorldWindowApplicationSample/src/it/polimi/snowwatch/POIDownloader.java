@@ -34,7 +34,7 @@ public class POIDownloader {
 	private final HttpClient mClient;
 
 	/**
-	 * Current Session ID
+	 * Listener
 	 */
 	private OnPOIsUpdateEventListener mListener = null;
 	private HttpTask mTask = null;
@@ -47,7 +47,7 @@ public class POIDownloader {
 	}
 
 	/**
-	 * Set the new coordinates (altitude is auto)
+	 * Set the new coordinates
 	 * 
 	 * @param latitude
 	 * @param longitude
@@ -62,28 +62,11 @@ public class POIDownloader {
 	}
 
 	/**
-	 * Set the new coordinates
-	 * 
-	 * @param latitude
-	 * @param longitude
-	 * @param altitude
-	 */
-	public void setCoordinates(double latitude, double longitude,
-			double altitude) {
-		if (mTask != null){
-			mTask.cancel(true);
-		}
-		mTask = new HttpTask();
-		mTask.execute("http://gis2014-project02-ws.appspot.com/getClosestPOI?lat="
-				+ latitude + "&lon=" + longitude + "&alt=" + altitude);
-	}
-
-	/**
-	 * Set the new listener for landscape changes
+	 * Set the new listener for POIs changes
 	 * 
 	 * @param listener
 	 */
-	public void setLandscapeUpdateListener(
+	public void setPOIsUpdateListener(
 			OnPOIsUpdateEventListener listener) {
 		mListener = listener;
 	}
@@ -105,11 +88,11 @@ public class POIDownloader {
 			int num = json.length();
 			for (int i = 0; i < num; i++) {
 				try {
-					JSONObject jsonMountain = json.getJSONObject(i);
-					final String title = jsonMountain.getString("title");
-					final String url = jsonMountain.getString("picture");
-					final double lat = jsonMountain.getJSONObject("coordinates").getDouble("lat");
-					final double lon = jsonMountain.getJSONObject("coordinates").getDouble("lon");
+					JSONObject jsonPOI = json.getJSONObject(i);
+					final String title = jsonPOI.getString("title");
+					final String url = jsonPOI.getString("picture");
+					final double lat = jsonPOI.getJSONObject("coordinates").getDouble("lat");
+					final double lon = jsonPOI.getJSONObject("coordinates").getDouble("lon");
 					
 					markers.add(new ImageMarker(new Coordinate(lat, lon), title, url));
 				} catch (JSONException e) {
