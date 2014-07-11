@@ -390,6 +390,7 @@ public class WorldWindowActivity extends Activity implements LocationManager.OnL
 	@Override
 	public void onPOIsUpdate(List<ImageMarker> ms) {
 		Globe globe = this.wwd.getModel().getGlobe();
+		markers.clear();
 		for (ImageMarker marker : ms) {
 			markers.add(new ImageMarker(marker.center, globe.getElevation(Angle.fromDegrees(marker.center.latitude), Angle.fromDegrees(marker.center.longitude)), marker.name, marker.url));
 		}
